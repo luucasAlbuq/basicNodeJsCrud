@@ -1,2 +1,2 @@
 # basicNodeJsCrud
-Just a basic crud using nodeJS, Exoress and MongoDB
+Just a basic crud using nodeJS, Express and MongoDB
