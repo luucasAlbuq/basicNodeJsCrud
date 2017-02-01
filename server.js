@@ -1,10 +1,11 @@
 var express = require('express');
 var fs = require('fs');
 const bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb');
 
 var db;
 const app = express();
+
 
 /*connect to the remote mongo database*/
 //var mongo_url = fs.readFileSync('url_mongo.txt', 'utf8');
@@ -19,10 +20,15 @@ MongoClient.connect(mongo_url, function(error, database){
     db = database;
 
     /*if everything is ok start listening the port*/
-    app.listen(3000, function() {
-      console.log('listening on 3000')
-    });
+    startApp();
 });
+
+/* Startup the application on port 3000*/
+function startApp(){
+  app.listen(3000, function() {
+    console.log('listening on 3000')
+  });
+}
 
 /*The urlencoded method within body-parser tells body-parser to extract data
  *from the <form> element and add them to the body property
@@ -30,9 +36,17 @@ MongoClient.connect(mongo_url, function(error, database){
  */
 app.use(bodyParser.urlencoded({extended: true}));
 
-//Initializer the aplication
+/*loads the index.html file*/
 app.get('/',function(request,response){
   response.sendFile(__dirname+'/index.html');
+});
+
+/*loads all contacts storeged in the db*/
+app.get('/contacts',function(request, response){
+    var contacts = db.collection('contacts').find().toArray(function(error, result){
+      console.log(result);
+       return result;
+    });
 });
 
 //Add a new contact
